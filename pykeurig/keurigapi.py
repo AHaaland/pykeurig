@@ -516,7 +516,7 @@ class KeurigApi:
         client.headers = self._get_headers()
         try:
             res = await client.get(endpoint, timeout=self._timeout)
-            if res.status_code == 401:
+            if res.status_code in (400,401):
                 if not await self._async_refresh_token():
                     raise UnauthorizedException()
                 client.headers = self._get_headers()
@@ -545,7 +545,7 @@ class KeurigApi:
 
             endpoint = f"{API_URL}api/claa/v1/oauth/token"
             res = await client.post(endpoint, json=data, timeout=self._timeout)
-            if res.status_code in (401, 403):
+            if res.status_code in (400, 401, 403):
                 return False
             res.raise_for_status()
 
@@ -576,7 +576,7 @@ class KeurigApi:
 
             endpoint = f"{API_URL}api/claa/v1/oauth/token"
             res = client.post(endpoint, json=data, timeout=self._timeout)
-            if res.status_code in (401, 403):
+            if res.status_code in (400, 401, 403):
                 return False
             res.raise_for_status()
 
